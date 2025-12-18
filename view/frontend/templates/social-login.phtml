@@ -1,0 +1,26 @@
+<?php
+$notLoginPage = $this->getCurrentPageRedirectUrl();
+/** @var \WeltPixel\SocialLogin\Helper\Data $slHelper */
+$slHelper = $this->helper('WeltPixel\SocialLogin\Helper\Data');
+$cspNonceProvider = $slHelper->getCspNonceProvider();
+?>
+
+<script<?php if ($cspNonceProvider): ?> nonce="<?= $block->escapeHtmlAttr($cspNonceProvider->generateNonce()) ?>"<?php endif; ?>>
+    window.skipModules = <?= /* @noEscape */ $this->getSkipModules();?>;
+    window.queryParam = '<?= /* @noEscape */ \WeltPixel\SocialLogin\Helper\Data::REFERER_STORE_PARAM_NAME ?>';
+    window.isSlGuestCheckoutEnabled = "<?= /* @noEscape */ $this->helper('WeltPixel\SocialLogin\Helper\Data')->isGuestCheckoutEnabled(); ?>";
+    require(['slReferer']);
+</script>
+
+<form style="display:none;"
+      class="form"
+      action="<?php /* @noEscape */ echo $block->getUrl('sociallogin/account/loginPost', ['_secure' => true]) ?>"
+      method="post"
+      id="sociallogin-form"
+      data-mage-init='{"validation":{}}'
+>
+    <?= $block->getBlockHtml('formkey') ?>
+    <input id="sociallogin-referer" name="<?= \Magento\Customer\Model\Url::REFERER_QUERY_PARAM_NAME ?>" type="hidden" value="" />
+    <input name="sociallogin-checkout" type="hidden" value="<?= /* @noEscape */ $notLoginPage?>" />
+    <input id="sociallogin-submit" type="submit" value="" />
+</form>

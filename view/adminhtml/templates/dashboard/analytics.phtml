@@ -1,0 +1,84 @@
+<?php $socialMedia = $this->fetchAnalyticsData()?>
+<?php $totals = $this->fetchAnalyticsTotals()?>
+<?php $lastUpdate = $this->getLastUpdate()?>
+<?php $loadDataText = $lastUpdate ? __('Reload Analytics') : __('Load Analytics');?>
+<div class="page-main-actions">
+    <?php if($lastUpdate):?>
+    <div class="store-switcher store-view">
+        <strong><?=$block->escapeHtml(__('Last Update on: '))?></strong><?= /* @noEscape */ $this->getLastUpdate()?>
+    </div>
+    <?php endif;?>
+    <div class="page-actions">
+        <div class="page-actions-inner">
+            <div class="page-actions-buttons">
+                <form action="<?=$block->escapeUrl($this->getRefreshUrl())?>">
+                    <button class="action-primary" type="submit" title="Reload Data"><?= /* @noEscape */ $loadDataText?></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="sl-dashboard grid-wrapper">
+    <table class="data-grid data-grid-draggable">
+        <thead>
+        <tr>
+            <th class="al-left data-grid-th"><strong><?=$block->escapeHtml(__('Customers Types'))?></strong></th>
+            <th class="al-right data-grid-th"><strong><?=$block->escapeHtml(__('# Users'))?></strong></th>
+            <th class="al-right data-grid-th"><strong><?=$block->escapeHtml(__('% Users'))?></strong></th>
+            <th class="al-right data-grid-th"><strong><?=$block->escapeHtml(__('# Orders'))?></strong></th>
+            <th class="al-right data-grid-th"><strong><?=$block->escapeHtml(__('% Orders'))?></strong></th>
+            <th class="al-right data-grid-th"><strong><?=$block->escapeHtml(__('# Items'))?></strong></th>
+            <th class="al-right data-grid-th"><strong><?=$block->escapeHtml(__('% Items'))?></strong></th>
+            <th class="al-right data-grid-th"><strong><?=$block->escapeHtml(__('Revenue'))?></strong></th>
+            <th class="al-right data-grid-th"><strong><?=$block->escapeHtml(__('% Revenue'))?></strong></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <?php if(isset($socialMedia['Facebook']) &&
+                isset($socialMedia['Instagram']) &&
+                isset($socialMedia['Google']) &&
+                isset($socialMedia['PayPal']) &&
+                isset($socialMedia['LinkedIn']) &&
+                isset($socialMedia['Amazon']) &&
+                isset($socialMedia['Twitter']) &&
+                isset($socialMedia['Guest']) &&
+                isset($socialMedia['Email & Password'])
+        ):?>
+            <?php foreach($socialMedia as $label => $data) :?>
+                <tr>
+                    <td class="al-left"><?php /* @noEscape */ echo $label;?></td>
+                    <td class="al-right"><?=  /* @noEscape */ $data->getUsersNo();?></td>
+                    <td class="al-right"><?=  /* @noEscape */ $data->getUsersPrecent();?></td>
+                    <td class="al-right"><?=  /* @noEscape */ $data->getOrdersNo();?></td>
+                    <td class="al-right"><?=  /* @noEscape */ $data->getOrdersPercent();?></td>
+                    <td class="al-right"><?=  /* @noEscape */ $data->getItemsNo();?></td>
+                    <td class="al-right"><?=  /* @noEscape */ $data->getItemsPercent();?></td>
+                    <td class="al-right"><?=  /* @noEscape */ $data->getRevenue();?></td>
+                    <td class="al-right"><?=  /* @noEscape */ $data->getRevenuePercent();?></td>
+                </tr>
+            <?php endforeach;?>
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <td><strong><?=$block->escapeHtml(__('Total'))?></strong></td>
+                    <td><strong><?=  /* @noEscape */ $totals->getTotalCustomers()?></strong></td>
+                    <td><strong>100%</strong></td>
+                    <td><strong><?=  /* @noEscape */ $totals->getTotalOrders()?></strong></td>
+                    <td><strong>100%</strong></td>
+                    <td><strong><?=  /* @noEscape */ $totals->getTotalOrdersItems()?></strong></td>
+                    <td><strong>100%</strong></td>
+                    <td><strong><?=  /* @noEscape */ $totals->getTotalRevenue()?></strong></td>
+                    <td><strong>100%</strong></td>
+                </tr>
+            </tfoot>
+        <?php else: ?>
+            <tr class="data-grid-tr-no-data">
+                <td colspan="9">We couldn't find any records.</td>
+            </tr>
+        <?php endif;?>
+
+
+    </table>
+</div>
